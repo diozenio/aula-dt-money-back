@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Res,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -24,30 +26,33 @@ export class TransactionController {
   ) {
     const createdTransaction =
       await this.transactionService.create(createTransactionDto);
-    res.status(201).send(createdTransaction);
-    return;
+    res.status(HttpStatus.CREATED).send(createdTransaction);
   }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   findAll() {
     return this.transactionService.findAll();
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
-    return this.transactionService.findOne(+id);
+    return this.transactionService.findOne(id);
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   update(
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.transactionService.update(+id, updateTransactionDto);
+    return this.transactionService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.transactionService.remove(+id);
+    return this.transactionService.remove(id);
   }
 }
