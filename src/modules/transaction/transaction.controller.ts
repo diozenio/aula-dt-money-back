@@ -9,11 +9,14 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Response } from 'express';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('transaction')
 export class TransactionController {
@@ -31,8 +34,22 @@ export class TransactionController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.transactionService.findAll();
+  findAll(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+      }),
+    )
+    paginationDto: PaginationDto,
+  ) {
+    return this.transactionService.findAll(paginationDto);
+  }
+
+  @Get('summary')
+  @HttpCode(HttpStatus.OK)
+  getSummary() {
+    return this.transactionService.getSummary();
   }
 
   @Get(':id')
